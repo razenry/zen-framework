@@ -16,7 +16,14 @@ class ErrorController extends Controller
 
     public function serverError(\Throwable $exception = null)
     {
-        header("HTTP/1.1 500 Internal Server Error");
+        if (!headers_sent()) {
+            header("HTTP/1.1 500 Internal Server Error");
+        } else {
+            // Jika headers sudah terkirim, kita cetak exception langsung
+            if (getenv('APP_DEBUG') === 'true' && $exception) {
+                echo "<br><br><strong>Original Exception:</strong> " . $exception->getMessage() . " in " . $exception->getFile() . ":" . $exception->getLine() . "<br>";
+            }
+        }
         $data['title'] = '500 - Internal Server Error';
         $data['exception'] = $exception;
         

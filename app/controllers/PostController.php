@@ -12,8 +12,7 @@ class PostController extends Controller
     {
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to view posts.';
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $userId = $_SESSION['user_id'];
@@ -28,8 +27,7 @@ class PostController extends Controller
     public function create()
     {
         if (!isset($_SESSION['user_id'])) {
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $data['title'] = 'Create Post';
@@ -40,8 +38,7 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if (!$post) {
-            header("Location: " . route('home'));
-            exit;
+            $this->redirect(route('home'));
         }
 
         // Increment view count
@@ -57,16 +54,14 @@ class PostController extends Controller
     public function edit($id)
     {
         if (!isset($_SESSION['user_id'])) {
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $post = Post::find($id);
 
         if (!$post || $post->user_id != $_SESSION['user_id']) {
             $_SESSION['error'] = 'Post not found or unauthorized.';
-            header("Location: " . route('posts'));
-            exit;
+            $this->redirect(route('posts'));
         }
 
         $data['title'] = 'Edit Post';
@@ -77,8 +72,7 @@ class PostController extends Controller
     public function store()
     {
         if (!isset($_SESSION['user_id'])) {
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $title = $_POST['title'] ?? '';
@@ -93,23 +87,20 @@ class PostController extends Controller
         $this->handleUploads($post->id);
 
         $_SESSION['success'] = 'Post created successfully!';
-        header("Location: " . route('home'));
-        exit;
+        $this->redirect(route('home'));
     }
 
     public function update($id)
     {
         if (!isset($_SESSION['user_id'])) {
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $post = Post::find($id);
 
         if (!$post || $post->user_id != $_SESSION['user_id']) {
             $_SESSION['error'] = 'Post not found or unauthorized.';
-            header("Location: " . route('posts'));
-            exit;
+            $this->redirect(route('posts'));
         }
 
         $title = $_POST['title'] ?? '';
@@ -123,15 +114,14 @@ class PostController extends Controller
         $this->handleUploads($id);
 
         $_SESSION['success'] = 'Post updated successfully!';
-        header("Location: " . route('posts.show', ['id' => $id]));
-        exit;
+        $this->redirect(route('posts.show', ['id' => $id]));
     }
 
     private function handleUploads($postId)
     {
         if (isset($_FILES['images']) && !empty($_FILES['images']['name'][0])) {
             $uploadDir = dirname(__DIR__, 2) . '/public/uploads/';
-            
+
             foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
                 if ($_FILES['images']['error'][$key] == 0) {
                     $fileName = time() . '_' . basename($_FILES['images']['name'][$key]);
@@ -148,19 +138,17 @@ class PostController extends Controller
         }
     }
 
-    public function delete($id)
+    public function delete(string $id)
     {
         if (!isset($_SESSION['user_id'])) {
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $post = Post::find($id);
 
         if (!$post || $post->user_id != $_SESSION['user_id']) {
             $_SESSION['error'] = 'Post not found or unauthorized.';
-            header("Location: " . route('posts'));
-            exit;
+            $this->redirect(route('posts'));
         }
 
         Post::where('id', '=', $id)->delete();
@@ -168,7 +156,6 @@ class PostController extends Controller
         \App\Models\Comment::where('post_id', '=', $id)->delete();
 
         $_SESSION['success'] = 'Post deleted successfully!';
-        header("Location: " . route('home'));
-        exit;
+        $this->redirect(route('home'));
     }
 }

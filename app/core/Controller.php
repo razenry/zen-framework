@@ -31,4 +31,21 @@ class Controller
             throw new \Exception("Model file '$model' not found.");
         }
     }
+
+    /**
+     * Redirects the user to a specific URL
+     * 
+     * @param string $url The URL to redirect to
+     */
+    protected function redirect($url)
+    {
+        // If the URL is just a path (e.g. '/login'), we can make it absolute or just pass it to header
+        // For best compatibility we just prepend base_url if it starts with '/'
+        if (strpos($url, '/') === 0) {
+            $url = baseUrl($url);
+        }
+        
+        header("Location: " . $url);
+        exit;
+    }
 }

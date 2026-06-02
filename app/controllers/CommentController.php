@@ -12,14 +12,12 @@ class CommentController extends Controller
     {
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'You must be logged in to comment.';
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $post = Post::find($id);
         if (!$post) {
-            header("Location: " . route('home'));
-            exit;
+            $this->redirect(route('home'));
         }
 
         $commentText = $_POST['comment'] ?? '';
@@ -32,7 +30,6 @@ class CommentController extends Controller
             $_SESSION['success'] = 'Comment posted!';
         }
 
-        header("Location: " . route('posts.show', ['id' => $id]));
-        exit;
+        $this->redirect(route('posts.show', ['id' => $id]));
     }
 }

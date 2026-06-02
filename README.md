@@ -1,6 +1,6 @@
-# MVC Boilerplate Framework (Laravel-Like untuk SMK)
+# Zen PHP Framework
 
-Boilerplate ini adalah sebuah framework PHP MVC (Model-View-Controller) sederhana yang dirancang mirip dengan Laravel untuk membantu siswa SMK mempelajari konsep MVC, Routing, Database Query Builder, CLI Migrations, serta pengembangan web modern secara mudah.
+Zen PHP ini adalah sebuah framework PHP MVC (Model-View-Controller) sederhana yang dirancang mirip dengan Laravel untuk membantu siswa SMK mempelajari konsep MVC, Routing, Database Query Builder, CLI Migrations, serta pengembangan web modern secara mudah.
 
 ---
 
@@ -23,7 +23,7 @@ Boilerplate ini adalah sebuah framework PHP MVC (Model-View-Controller) sederhan
 ## ⚙️ Instalasi & Konfigurasi
 
 1. **Unduh/Clone Repositori**:
-   Letakkan folder project ini di dalam direktori server Anda (misalnya `C:/xampp/htdocs/mvc-boiler-plate`).
+   Letakkan folder project ini di dalam direktori server Anda (misalnya `C:/xampp/htdocs/zen-php`).
 
 2. **Install Dependensi Composer**:
    Buka terminal di direktori project ini, lalu jalankan:
@@ -42,7 +42,7 @@ Boilerplate ini adalah sebuah framework PHP MVC (Model-View-Controller) sederhan
    DB_USER=root
    DB_PASS=
    DB_NAME=db_bp
-   BASE_URL=http://localhost/mvc-boiler-plate
+   BASE_URL=http://localhost/zen-php
    ```
    *Catatan: Pastikan `BASE_URL` sesuai dengan alamat akses di browser Anda.*
 
@@ -95,7 +95,7 @@ php zen make:controller ProductController
 ## 📁 Struktur Direktori Project
 
 ```text
-mvc-boiler-plate/
+zen-php/
 ├── app/
 │   ├── controllers/      # Logika aplikasi (Controller)
 │   ├── core/             # Sistem inti framework (App, Route, Model, Database, dll)

@@ -29,3 +29,8 @@ Route::post('/posts/{id}/delete', [PostController::class, 'delete'])->name('post
 
 // Comments
 Route::post('/posts/{id}/comment', [CommentController::class, 'store'])->name('comments.store');
+
+// Documentation
+use App\Controllers\DocsController;
+Route::get('/docs', [DocsController::class, 'index'])->name('docs.index');
+Route::get('/docs/{page}', [DocsController::class, 'show'])->name('docs.show');

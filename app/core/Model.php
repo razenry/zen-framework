@@ -75,6 +75,14 @@ class Model
         return $this->db->update($data);
     }
 
+    public function delete($id = null)
+    {
+        if ($id !== null) {
+            $this->db->where('id', $id);
+        }
+        return $this->db->delete();
+    }
+
     protected static function hydrate($data)
     {
         $instance = new static();

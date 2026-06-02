@@ -1,9 +1,10 @@
 {
-    "name": "razenry/mvc-boilerplate",
-    "description": "A simple Laravel-like MVC boilerplate for SMK",
+    "name": "razenry/zen-php",
+    "description": "A lightweight MVC framework for PHP",
     "type": "project",
     "require": {
-        "php": "^7.4 || ^8.0"
+        "php": "^7.4 || ^8.0",
+        "erusev/parsedown": "^1.8"
     },
     "autoload": {
         "psr-4": {

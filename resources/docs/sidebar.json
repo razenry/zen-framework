@@ -1,0 +1,31 @@
+[
+    {
+        "title": "Mulai Cepat",
+        "items": [
+            {"title": "Instalasi", "path": "installation"},
+            {"title": "Zen CLI", "path": "cli"}
+        ]
+    },
+    {
+        "title": "Dasar-dasar",
+        "items": [
+            {"title": "Routing", "path": "routing"},
+            {"title": "Controllers", "path": "controllers"},
+            {"title": "Views", "path": "views"}
+        ]
+    },
+    {
+        "title": "Database",
+        "items": [
+            {"title": "Koneksi & Migrasi", "path": "database"},
+            {"title": "Models", "path": "models"}
+        ]
+    },
+    {
+        "title": "Tutorials",
+        "items": [
+            {"title": "Membuat CRUD", "path": "crud"},
+            {"title": "Autentikasi User", "path": "authentication"}
+        ]
+    }
+]

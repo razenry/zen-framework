@@ -11,8 +11,7 @@ class AuthController extends Controller
     public function login()
     {
         if (isset($_SESSION['user_id'])) {
-            header("Location: " . route('home'));
-            exit;
+            $this->redirect(route('home'));
         }
         $data['title'] = 'Login';
         App::Layout('main', 'auth/login', $data);
@@ -29,20 +28,17 @@ class AuthController extends Controller
             $_SESSION['user_id'] = $user->id;
             $_SESSION['user_name'] = $user->name;
             $_SESSION['success'] = 'Welcome back, ' . $user->name . '!';
-            header("Location: " . route('home'));
-            exit;
+            $this->redirect(route('home'));
         }
 
         $_SESSION['error'] = 'Invalid email or password.';
-        header("Location: " . route('login'));
-        exit;
+        $this->redirect(route('login'));
     }
 
     public function register()
     {
         if (isset($_SESSION['user_id'])) {
-            header("Location: " . route('home'));
-            exit;
+            $this->redirect(route('home'));
         }
         $data['title'] = 'Register';
         App::Layout('main', 'auth/register', $data);
@@ -57,15 +53,13 @@ class AuthController extends Controller
 
         if ($password !== $confirm) {
             $_SESSION['error'] = 'Passwords do not match.';
-            header("Location: " . route('register'));
-            exit;
+            $this->redirect(route('register'));
         }
 
         $existingUser = User::where('email', '=', $email)->first();
         if ($existingUser) {
             $_SESSION['error'] = 'Email is already taken.';
-            header("Location: " . route('register'));
-            exit;
+            $this->redirect(route('register'));
         }
 
         $user = User::create([
@@ -76,13 +70,11 @@ class AuthController extends Controller
 
         if ($user) {
             $_SESSION['success'] = 'Registration successful! Please login.';
-            header("Location: " . route('login'));
-            exit;
+            $this->redirect(route('login'));
         }
 
         $_SESSION['error'] = 'Failed to register. Please try again.';
-        header("Location: " . route('register'));
-        exit;
+        $this->redirect(route('register'));
     }
 
     public function logout()
@@ -90,7 +82,6 @@ class AuthController extends Controller
         session_destroy();
         session_start();
         $_SESSION['success'] = 'You have been logged out.';
-        header("Location: " . route('login'));
-        exit;
+        $this->redirect(route('login'));
     }
 }
