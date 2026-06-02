@@ -1,0 +1,16 @@
+# Disable directory listing
+Options -Indexes -Multiviews
+
+# Protect sensitive files
+<FilesMatch "^\.env|composer\.(json|lock)$">
+    Require all denied
+</FilesMatch>
+
+# Protect sensitive directories
+RewriteEngine On
+RewriteRule ^(app|database|routes|vendor|storage/logs)(/.*)?$ - [F,L]
+
+# Route all other requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?url=$1 [L]

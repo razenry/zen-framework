@@ -1,0 +1,143 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/app/init.php';
+
+use Database\Schema;
+use Database\Blueprint;
+
+if ($argc < 2) {
+    echo "Usage: php zen <command>\n\n";
+    echo "Available commands:\n";
+    echo "  migrate            Run the database migrations\n";
+    echo "  migrate:refresh    Drop all tables and re-run all migrations\n";
+    echo "  make:controller    Create a new controller class\n";
+    echo "  make:model         Create a new Eloquent model class\n";
+    echo "  make:migration     Create a new migration file\n";
+    exit(1);
+}
+
+$command = $argv[1];
+
+switch ($command) {
+    case 'migrate':
+        echo "Running Migrations...\n";
+        $migrationsDir = __DIR__ . '/database/migrations';
+        $files = scandir($migrationsDir);
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') continue;
+
+            if (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                require_once $migrationsDir . '/' . $file;
+                
+                $filenameWithoutExt = preg_replace('/^(\d{4}_\d{2}_\d{2}_\d{6}_|\d+_)/', '', pathinfo($file, PATHINFO_FILENAME));
+                $className = str_replace(' ', '', ucwords(str_replace('_', ' ', $filenameWithoutExt)));
+
+                if (class_exists($className)) {
+                    echo "Migrating: $file\n";
+                    $migration = new $className();
+                    $migration->up();
+                    echo "Migrated: $file\n\n";
+                }
+            }
+        }
+        echo "All migrations completed!\n";
+        break;
+
+    case 'migrate:refresh':
+        echo "Rolling back all migrations...\n";
+        $migrationsDir = __DIR__ . '/database/migrations';
+        $files = scandir($migrationsDir);
+
+        // Run down() in reverse order (best practice, but simple order is fine for basic)
+        foreach (array_reverse($files) as $file) {
+            if ($file === '.' || $file === '..') continue;
+
+            if (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                require_once $migrationsDir . '/' . $file;
+                
+                $filenameWithoutExt = preg_replace('/^(\d{4}_\d{2}_\d{2}_\d{6}_|\d+_)/', '', pathinfo($file, PATHINFO_FILENAME));
+                $className = str_replace(' ', '', ucwords(str_replace('_', ' ', $filenameWithoutExt)));
+
+                if (class_exists($className)) {
+                    $migration = new $className();
+                    if (method_exists($migration, 'down')) {
+                        $migration->down();
+                        echo "Dropped: $file\n";
+                    }
+                }
+            }
+        }
+        echo "Rollback completed. Running migrations again...\n";
+        
+        // Re-run up()
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') continue;
+
+            if (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                require_once $migrationsDir . '/' . $file;
+                
+                $filenameWithoutExt = preg_replace('/^(\d{4}_\d{2}_\d{2}_\d{6}_|\d+_)/', '', pathinfo($file, PATHINFO_FILENAME));
+                $className = str_replace(' ', '', ucwords(str_replace('_', ' ', $filenameWithoutExt)));
+
+                if (class_exists($className)) {
+                    echo "Migrating: $file\n";
+                    $migration = new $className();
+                    $migration->up();
+                    echo "Migrated: $file\n\n";
+                }
+            }
+        }
+        echo "Refresh completed successfully!\n";
+        break;
+
+    case 'make:controller':
+        if (!isset($argv[2])) {
+            die("Error: Controller name is required. Usage: php artisan make:controller NameController\n");
+        }
+        $name = $argv[2];
+        $file = __DIR__ . "/app/controllers/{$name}.php";
+        if (file_exists($file)) die("Error: Controller already exists!\n");
+
+        $content = "<?php\n\nnamespace App\Controllers;\n\nuse App\Core\Controller;\nuse App\Core\App;\n\nclass {$name} extends Controller\n{\n    public function index()\n    {\n        // App::Layout('main', 'view_name', \$data);\n    }\n}\n";
+        file_put_contents($file, $content);
+        echo "Controller created successfully: app/controllers/{$name}.php\n";
+        break;
+
+    case 'make:model':
+        if (!isset($argv[2])) {
+            die("Error: Model name is required. Usage: php artisan make:model Name\n");
+        }
+        $name = $argv[2];
+        $file = __DIR__ . "/app/models/{$name}.php";
+        if (file_exists($file)) die("Error: Model already exists!\n");
+
+        $table = strtolower($name) . 's'; // simple plural
+        $content = "<?php\n\nnamespace App\Models;\n\nuse App\Core\Model;\n\nclass {$name} extends Model\n{\n    protected \$table = '{$table}';\n}\n";
+        file_put_contents($file, $content);
+        echo "Model created successfully: app/models/{$name}.php\n";
+        break;
+
+    case 'make:migration':
+        if (!isset($argv[2])) {
+            die("Error: Migration name is required. Usage: php artisan make:migration name_table\n");
+        }
+        $name = $argv[2];
+        $timestamp = date('Y_m_d_His');
+        $file = __DIR__ . "/database/migrations/{$timestamp}_{$name}.php";
+        if (file_exists($file)) die("Error: Migration already exists!\n");
+
+        $className = str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
+        $tableName = str_replace(['create_', '_table'], '', $name); // Basic parsing
+        
+        $content = "<?php\n\nuse Database\Schema;\nuse Database\Blueprint;\n\nclass {$className}\n{\n    public function up()\n    {\n        Schema::create('{$tableName}', function (Blueprint \$table) {\n            \$table->id();\n            \$table->timestamps();\n        });\n    }\n\n    public function down()\n    {\n        Schema::dropIfExists('{$tableName}');\n    }\n}\n";
+        file_put_contents($file, $content);
+        echo "Migration created successfully: database/migrations/{$timestamp}_{$name}.php\n";
+        break;
+
+    default:
+        echo "Command '$command' is not defined.\n";
+        break;
+}
