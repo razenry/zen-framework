@@ -1,6 +1,6 @@
 # Zen PHP Framework
 
-Zen PHP ini adalah sebuah framework PHP MVC (Model-View-Controller) sederhana yang dirancang mirip dengan Laravel untuk membantu siswa SMK mempelajari konsep MVC, Routing, Database Query Builder, CLI Migrations, serta pengembangan web modern secara mudah.
+Zen PHP ini adalah sebuah framework PHP MVC (Model-View-Controller) sederhana yang dirancang mirip dengan Laravel untuk membantu siswa mempelajari konsep MVC, Routing, Database Query Builder, CLI Migrations, serta pengembangan web modern secara mudah.
 
 ---
 
